@@ -1,0 +1,211 @@
+﻿@model List<LightSeekerDeckBuilder.Data.Models.Card>
+
+@{
+    ViewData["Title"] = "Light Seeker Deck Builder v0.1";
+}
+
+<ul class="nav nav-tabs builder-nav" id="builderNav">
+    <li role="presentation" id="heroesTab" class="active"><a href="#heroes" aria-controls="heroes" role="tab" data-toggle="tab">Heroes</a></li>
+    <li role="presentation" id="combosTab"><a href="#combos" aria-controls="combos" role="tab" data-toggle="tab">Combos</a></li>
+    <li role="presentation" id="actionsTab"><a href="#actions" aria-controls="actions" role="tab" data-toggle="tab">Actions</a></li>
+</ul>
+
+<div class="container">
+    <div class="col-xs-8 card-panel">
+
+        <div class="flex-row row"  id="heroes">
+            @if (Model != null)
+            {
+                foreach (var card in Model.Where(x => x.Type == LightSeekerDeckBuilder.Data.Enums.CardType.Hero))
+                {
+                    <div class="col-xs-6 col-sm-4 col-lg-3 card-holder" id="@card.Id" cardType="@card.Type" name="@card.Name" orderType="@card.Order"  maxDraw="1" currentDraw="0">
+                        @if(card.ElementTypes != null)
+                        {
+                            foreach(var type in card.ElementTypes)
+                            {
+                                <span class="@(card.Id + "Type" )" hidden>@type</span>
+                            }
+                        }
+                        <div class="thumbnail">
+                            <a href="#" class="card-link"><img src="@card.ImagePath" /></a> <!-- Add an action to a partial view to open up the card details, pass the card -->
+                            <button class="btn btn-success add-badge"><i class="glyphicon glyphicon-plus"></i></button>
+                            <button class="btn btn-primary view-badge"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                }
+             }
+        </div>
+        <div class="flex-row row" id="combos">
+             @if (Model != null)
+             {
+                foreach (var card in Model.Where(x => x.Type == LightSeekerDeckBuilder.Data.Enums.CardType.ComboAttack || x.Type == LightSeekerDeckBuilder.Data.Enums.CardType.ComboBuff || x.Type == LightSeekerDeckBuilder.Data.Enums.CardType.ComboDefend))
+                {
+                    <div class="col-xs-6 col-sm-4 col-lg-3 card-holder" id="@card.Id" cardType="@card.Type" name="@card.Name" orderType="@card.Order"  maxDraw="1" currentDraw="0">
+                         @if(card.ElementTypes != null)
+                          {
+                             foreach(var type in card.ElementTypes)
+                             {
+                                 <span class="@(card.Id + "Type" )" hidden>@type</span>
+                             }
+                          }
+                        <div class="thumbnail">
+                            <a href="#" class="card-link"><img src="@card.ImagePath" /></a> <!-- Add an action to a partial view to open up the card details, pass the card -->
+                            <button class="btn btn-success add-badge"><i class="glyphicon glyphicon-plus"></i></button>
+                            <button class="btn btn-primary view-badge"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                }
+             }
+        </div>
+        <div class="flex-row row" id="actions">
+            @if (Model != null)
+             {
+                foreach (var card in Model.Where(x => x.Type == LightSeekerDeckBuilder.Data.Enums.CardType.Attack || x.Type == LightSeekerDeckBuilder.Data.Enums.CardType.Defend || x.Type == LightSeekerDeckBuilder.Data.Enums.CardType.Item || x.Type == LightSeekerDeckBuilder.Data.Enums.CardType.Buff))
+                {
+                    <div class="col-xs-6 col-sm-4 col-lg-3 card-holder" id="@card.Id" cardType="@card.Type" name="@card.Name" orderType="@card.Order"  maxDraw="3" currentDraw="0">
+                        @if(card.ElementTypes != null)
+                         {
+                             foreach(var type in card.ElementTypes)
+                             {
+                                 <span class="@(card.Id + "Type" )" hidden>@type</span>
+                             }
+                         }
+                        <div class="thumbnail">
+                            <a href="#" class="card-link"><img src="@card.ImagePath" /></a> <!-- Add an action to a partial view to open up the card details, pass the card -->
+                            <button class="btn btn-success add-badge"><i class="glyphicon glyphicon-plus"></i></button>
+                            <button class="btn btn-primary view-badge"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                }
+             }
+        </div>
+        
+
+    </div>
+    <div class="col-xs-4 sidebar">
+        <div class="panel panel-default">
+            <div class="panel-heading">Hero (0/1)</div>
+            <table class="table table-striped" id="heroTable">
+                <tr>
+                    <td>Name</td>
+                    <td>Elements</td>
+                </tr>
+            </table>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">Combos (0/5)</div>
+            <table class="table table-striped" id="comboTable">
+                <tr>
+                    <td>Name</td>
+                    <td>Cost</td>
+                </tr>
+            </table>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading" id="actionCounter">Actions (0/30)</div>
+            <table class="table table-striped" id="actionTable">
+                <tr>
+                    <td>Name</td>
+                    <td>Element</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        /* Tab Handling -- Make it not dumb someday */
+        $("#combos").hide();
+        $("#actions").hide();
+
+        $("#heroesTab").click(function (e) {
+            e.preventDefault();
+            $("#combos").hide();
+            $("#actions").hide();
+            $("#heroes").show();
+        });
+        $("#combosTab").click(function (e) {
+            e.preventDefault();
+            $("#heroes").hide();
+            $("#actions").hide();
+            $("#combos").show();
+        });
+        $("#actionsTab").click(function (e) {
+            e.preventDefault();
+            $("#heroes").hide();
+            $("#combos").hide();
+            $("#actions").show();
+        });
+    });
+
+    /* Add Functions */
+    $(".add-badge").click(function (e) {
+        var currId = $(this).parent().parent().attr('id');
+        var currCategory = $(this).parent().parent().attr('cardType');
+        var currName = $(this).parent().parent().attr('name');
+        var currElementTypes = [];
+
+        $("." + currId + "Type").each(function (value) {
+            currElementTypes.push($(this).text());
+        });
+
+        if (currCategory === "Hero") {
+            var thisHero = {
+                "Id": currId,
+                "Name": currName,
+                "Category": currCategory,
+                "ElementTypes": currElementTypes
+            };
+
+            UserPicks.hero.push(thisHero);
+            var newTable = "<thead><tr><td>Name</td><td>Elements</td></tr></thead><tbody>";
+            $.each(UserPicks.hero, function (index) {
+                newTable += '<tr><td>' + this.Name + '</td><td>' + getElementIcons(this.ElementTypes) + '</tr>';
+
+            });
+            newTable += "</tbody>";
+            $("#heroTable").html(newTable);
+        }
+
+        else if (currCategory === "ComboDefend" || currCategory === "ComboAttack" || currCategory === "ComboBuff") {
+            var thisCombo = {
+                "Id": currId,
+                "Name": currName,
+                "Category": currCategory,
+                "ElementTypes": currElementTypes
+            };
+
+            UserPicks.combos.push(thisCombo);
+            var newTable = "<thead><tr><td>Name</td><td>Elements</td></tr></thead><tbody>";
+            $.each(UserPicks.combos, function (index) {
+                newTable += '<tr><td>' + this.Name + '</td><td>' + getElementIcons(this.ElementTypes) + '</tr>';
+            });
+            newTable += "</tbody>";
+            $("#comboTable").html(newTable);
+
+        }
+
+        else if (currCategory === "Defend" || currCategory === "Attack" || currCategory === "Buff") {
+            var thisCombo = {
+                "Id": currId,
+                "Name": currName,
+                "Category": currCategory,
+                "ElementTypes": currElementTypes
+            };
+
+            UserPicks.actions.push(thisCombo);
+            var newTable = "<thead><tr><td>Name</td><td>Elements</td></tr></thead><tbody>";
+            $.each(UserPicks.actions, function (index) {
+                newTable += '<tr><td>' + this.Name + '</td><td>' + getElementIcons(this.ElementTypes) + '</tr>';
+            });
+            newTable += "</tbody>";
+            $("#actionTable").html(newTable);
+
+            $("#actionCounter").html("Actions (" + UserPicks.actions.length + "/30)");
+
+        }
+    });
+
+    
+</script>
