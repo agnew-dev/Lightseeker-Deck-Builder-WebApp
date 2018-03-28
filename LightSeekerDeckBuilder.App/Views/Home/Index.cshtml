@@ -84,7 +84,7 @@
     </div>
     <div class="col-xs-4 sidebar">
         <div class="panel panel-default">
-            <div class="panel-heading">Hero (0/1)</div>
+            <div class="panel-heading" id="heroCounter">Hero (0/1)</div>
             <table class="table table-striped" id="heroTable">
                 <tr>
                     <td>Name</td>
@@ -93,7 +93,7 @@
             </table>
         </div>
         <div class="panel panel-default">
-            <div class="panel-heading">Combos (0/5)</div>
+            <div class="panel-heading" id="comboCounter">Combos (0/5)</div>
             <table class="table table-striped" id="comboTable">
                 <tr>
                     <td>Name</td>
@@ -151,58 +151,32 @@
         });
 
         if (currCategory === "Hero") {
-            var thisHero = {
-                "Id": currId,
-                "Name": currName,
-                "Category": currCategory,
-                "ElementTypes": currElementTypes
-            };
+            var newTable = getCardRowHero(currId, currName, currCategory, currElementTypes);
 
-            UserPicks.hero.push(thisHero);
-            var newTable = "<thead><tr><td>Name</td><td>Elements</td></tr></thead><tbody>";
-            $.each(UserPicks.hero, function (index) {
-                newTable += '<tr><td>' + this.Name + '</td><td>' + getElementIcons(this.ElementTypes) + '</tr>';
-
-            });
-            newTable += "</tbody>";
             $("#heroTable").html(newTable);
+
+            $("#heroCounter").html("Hero (" + getHeroCount() + "/1)");
         }
 
         else if (currCategory === "ComboDefend" || currCategory === "ComboAttack" || currCategory === "ComboBuff") {
-            var thisCombo = {
-                "Id": currId,
-                "Name": currName,
-                "Category": currCategory,
-                "ElementTypes": currElementTypes
-            };
+            var newTable = getCardRowCombo(currId, currName, currCategory, currElementTypes);
 
-            UserPicks.combos.push(thisCombo);
-            var newTable = "<thead><tr><td>Name</td><td>Elements</td></tr></thead><tbody>";
-            $.each(UserPicks.combos, function (index) {
-                newTable += '<tr><td>' + this.Name + '</td><td>' + getElementIcons(this.ElementTypes) + '</tr>';
-            });
-            newTable += "</tbody>";
             $("#comboTable").html(newTable);
 
+            var comboCount = getComboCount();
+
+            $("#comboCounter").html("Combos (" + comboCount + "/5)");
         }
 
         else if (currCategory === "Defend" || currCategory === "Attack" || currCategory === "Buff") {
-            var thisCombo = {
-                "Id": currId,
-                "Name": currName,
-                "Category": currCategory,
-                "ElementTypes": currElementTypes
-            };
+            var newTable = getCardRowAction(currId, currName, currCategory, currElementTypes);
 
-            UserPicks.actions.push(thisCombo);
-            var newTable = "<thead><tr><td>Name</td><td>Elements</td></tr></thead><tbody>";
-            $.each(UserPicks.actions, function (index) {
-                newTable += '<tr><td>' + this.Name + '</td><td>' + getElementIcons(this.ElementTypes) + '</tr>';
-            });
-            newTable += "</tbody>";
             $("#actionTable").html(newTable);
 
-            $("#actionCounter").html("Actions (" + UserPicks.actions.length + "/30)");
+            var actionCount = getActionCount();
+            
+
+            $("#actionCounter").html("Actions (" + actionCount + "/30)");
 
         }
     });
